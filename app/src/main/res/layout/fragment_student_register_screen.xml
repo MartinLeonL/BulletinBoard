@@ -11,7 +11,7 @@
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="@string/register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,17 +20,19 @@
 
     <Button
         android:id="@+id/btn_toLogin"
+        style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login here"
+        android:text="@string/login_here"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_register" />
 
     <LinearLayout
-        android:layout_width="410dp"
-        android:layout_height="143dp"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="359dp"
+        android:layout_height="195dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btn_register"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,14 +41,16 @@
 
         <Button
             android:id="@+id/btn_toStudentRegistration"
-            android:layout_width="199dp"
-            android:layout_height="65dp"
-            android:text="Student" />
+            android:layout_width="145dp"
+            android:layout_height="60dp"
+            android:text="@string/student"
+            tools:ignore="ButtonStyle,VisualLintBounds" />
 
         <Button
             android:id="@+id/btn_toOrgRegistration"
-            android:layout_width="212dp"
-            android:layout_height="63dp"
-            android:text="Org" />
+            android:layout_width="145dp"
+            android:layout_height="60dp"
+            android:text="@string/org"
+            tools:ignore="ButtonStyle,VisualLintBounds" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
