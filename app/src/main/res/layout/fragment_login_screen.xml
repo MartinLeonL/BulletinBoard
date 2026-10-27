@@ -7,28 +7,39 @@
     android:layout_height="match_parent"
     tools:context=".LoginScreen">
 
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="@string/login_screen"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="164dp"
         android:layout_height="55dp"
         android:text="Login"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_toRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/btn_toRegister"
         android:layout_width="192dp"
         android:layout_height="42dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginBottom="274dp"
+        android:layout_marginTop="24dp"
         android:text="Register"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 </androidx.constraintlayout.widget.ConstraintLayout>

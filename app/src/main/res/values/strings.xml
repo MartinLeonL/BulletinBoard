@@ -7,4 +7,11 @@
     <string name="org">ORG</string>
     <string name="student">STUDENT</string>
     <string name="sign_out">SIGN OUT</string>
+    <string name="login_screen">Login Screen</string>
+    <string name="student_register_screen">Student Register Screen</string>
+    <string name="org_register_screen">Org Register Screen</string>
+    <string name="student_account_screen">Student Account Screen</string>
+    <string name="org_account_screen">Org Account Screen</string>
+    <string name="map_screen">Map Screen</string>
+    <string name="list_screen">List Screen</string>
 </resources>
