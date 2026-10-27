@@ -28,9 +28,13 @@ public class StudentAccountScreen extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Button btnSignOut = view.findViewById(R.id.btn_signOut);
-
         if (btnSignOut != null) {
             btnSignOut.setOnClickListener(v -> navigateTo(new LoginScreen()));
+        }
+
+        Button btnTEMPorgInfo = view.findViewById(R.id.btn_TEMPorgInfo);
+        if (btnTEMPorgInfo != null) {
+            btnTEMPorgInfo.setOnClickListener(v -> new OrgInfoPopup().show(getParentFragmentManager(), "OrgInfoPopup"));
         }
     }
 
