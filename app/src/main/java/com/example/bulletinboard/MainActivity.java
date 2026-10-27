@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void replaceFragment(Fragment fragment) {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
-        if (currentFragment != null && currentFragment.getClass().equals(fragment.getClass())) {
+        if (currentFragment != null && currentFragment.getClass() == fragment.getClass()) {
             return;
         }
 
