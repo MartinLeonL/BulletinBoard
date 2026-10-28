@@ -31,7 +31,7 @@ public class ListScreen extends Fragment {
 
         FloatingActionButton btnAddEvent = view.findViewById(R.id.btn_addEvent);
         FloatingActionButton btnFilter = view.findViewById(R.id.btn_filter);
-        Button btnTEMPeventInfo = view.findViewById(R.id.btn_TEMPeventInfo);
+        Button btnTempEventInfo = view.findViewById(R.id.btn_tempEventInfo);
 
         if (btnAddEvent != null) {
             btnAddEvent.setOnClickListener(v -> new AddEventPopup().show(getParentFragmentManager(), "AddEventPopup"));
@@ -41,8 +41,8 @@ public class ListScreen extends Fragment {
             btnFilter.setOnClickListener(v -> new FilterPopup().show(getParentFragmentManager(), "FilterPopup"));
         }
 
-        if (btnTEMPeventInfo != null) {
-            btnTEMPeventInfo.setOnClickListener(v -> new EventInfoPopup().show(getParentFragmentManager(), "EventInfoPopup"));
+        if (btnTempEventInfo != null) {
+            btnTempEventInfo.setOnClickListener(v -> new EventInfoPopup().show(getParentFragmentManager(), "EventInfoPopup"));
         }
     }
 }

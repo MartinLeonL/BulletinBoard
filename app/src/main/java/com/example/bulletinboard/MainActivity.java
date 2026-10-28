@@ -23,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.cl_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView = findViewById(R.id.bnv_bottomNavigation);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (isUpdatingBottomNav) {
@@ -53,21 +53,21 @@ public class MainActivity extends AppCompatActivity {
             Fragment initialFragment = new LoginScreen();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainerView, initialFragment)
+                    .replace(R.id.fcv_fragmentContainer, initialFragment)
                     .commit();
             updateBottomNavForFragment(initialFragment);
         }
     }
 
     public void replaceFragment(Fragment fragment) {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fcv_fragmentContainer);
         if (currentFragment != null && currentFragment.getClass() == fragment.getClass()) {
             return;
         }
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainerView, fragment)
+                .replace(R.id.fcv_fragmentContainer, fragment)
                 .commit();
 
         updateBottomNavForFragment(fragment);

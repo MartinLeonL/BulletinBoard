@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/cl_studentRegisterScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".StudentRegisterScreen">
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayoutButtons"
+        android:id="@+id/ll_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -54,7 +54,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_toLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutButtons"
+        app:layout_constraintTop_toBottomOf="@+id/ll_buttons"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
