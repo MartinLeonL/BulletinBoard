@@ -37,6 +37,8 @@
         android:contentDescription="@string/filter"
         android:src="@android:drawable/ic_menu_search"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="@color/black"
+        app:tint="@color/bright_yellow"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -48,6 +50,8 @@
         android:contentDescription="@string/add_event"
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="@color/black"
+        app:tint="@color/bright_yellow"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

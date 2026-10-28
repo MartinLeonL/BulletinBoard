@@ -36,6 +36,8 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/filter"
         android:src="@android:drawable/ic_menu_search"
+        app:backgroundTint="@color/black"
+        app:tint="@color/bright_yellow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -47,6 +49,8 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/add_event"
         android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/black"
+        app:tint="@color/bright_yellow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
