@@ -47,4 +47,6 @@
     <string name="create_org_name">Org Name: *</string>
     <string name="username_hint">username</string>
     <string name="name">name</string>
+    <string name="search_hint">search</string>
+    <string name="no_events_added_yet">No events added yet</string>
 </resources>
