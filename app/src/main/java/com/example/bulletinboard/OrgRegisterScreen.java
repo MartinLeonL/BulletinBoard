@@ -27,7 +27,7 @@ public class OrgRegisterScreen extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button btnRegister = view.findViewById(R.id.btn_register);
+        Button btnRegister = view.findViewById(R.id.btn_registerOrg);
         Button btnToLogin = view.findViewById(R.id.btn_toLogin);
         Button btnToStudentRegister = view.findViewById(R.id.btn_toStudentRegister);
 

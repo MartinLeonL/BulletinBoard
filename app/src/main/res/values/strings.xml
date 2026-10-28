@@ -26,6 +26,8 @@
     <string name="temp_org_info">Org Info (TEMP)</string>
     <string name="ucf_bulletin_board">UCF BULLETIN\nBOARD</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_up_student">Sign Up - Student</string>
+    <string name="sign_up_org">Sign Up - Org</string>
     <string name="username_or_org_label">Username or Org: *</string>
     <string name="password_label">Password: *</string>
     <string name="username_or_org_hint">username/org</string>
@@ -33,4 +35,16 @@
     <string name="dont_have_account">Don’t have an account?</string>
     <string name="register_here"><u>Register here</u></string>
     <string name="toggle_password_visibility">Toggle password visibility</string>
+    <string name="first">first</string>
+    <string name="last">last</string>
+    <string name="email">nid@ucf.edu</string>
+    <string name="enter_email">Email: *</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="register_as_org"><u>Register as org instead</u></string>
+    <string name="register_as_student"><u>Register as student instead</u></string>
+    <string name="create_username">Create Username: *</string>
+    <string name="create_password">Create Password: *</string>
+    <string name="create_org_name">Org Name: *</string>
+    <string name="username_hint">username</string>
+    <string name="name">name</string>
 </resources>
