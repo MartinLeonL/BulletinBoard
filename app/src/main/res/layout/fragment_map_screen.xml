@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".MapScreen">
 
+    <!-- Map Image -->
+    <ImageView
+        android:id="@+id/iv_mapImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/map"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ucf_map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- Top Search Bar -->
     <LinearLayout
         android:id="@+id/ll_searchBar"
