@@ -10,6 +10,7 @@
     <string name="events">Events</string>
     <string name="map">Map</string>
     <string name="account">Account</string>
+    <string name="account_caps">ACCOUNT</string>
     <string name="login_screen">Login Screen</string>
     <string name="student_register_screen">Student Register Screen</string>
     <string name="org_register_screen">Org Register Screen</string>
@@ -49,4 +50,8 @@
     <string name="name">name</string>
     <string name="search_hint">search</string>
     <string name="no_events_added_yet">No events added yet</string>
+    <string name="following">Following:</string>
+    <string name="username">Username</string>
+    <string name="org_name">Org Name</string>
+    <string name="description">Description:</string>
 </resources>
