@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.example.bulletinboard.database.entity.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
