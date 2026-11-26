@@ -9,6 +9,8 @@ activityKtx = "1.13.0"
 constraintlayout = "2.2.2"
 fragment = "1.9.1"
 cardview = "1.0.0"
+roomCompiler = "2.8.2"
+recyclerview = "1.4.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,6 +22,8 @@ activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
