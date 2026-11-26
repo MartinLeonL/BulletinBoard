@@ -5,4 +5,10 @@
     <color name="base_yellow">#F8E8AB</color>
     <color name="bright_yellow">#FFC904</color>
     <color name="dark_red">#8b0000</color>
+    <color name="bright_purple">#BD49EB</color>
+    <color name="bright_red">#FF4F4F</color>
+    <color name="lime_green">#58FF4F</color>
+    <color name="bright_orange">#FA912F</color>
+    <color name="bright_blue">#2FB6FA</color>
+    <color name="bright_grey">#969696</color>
 </resources>

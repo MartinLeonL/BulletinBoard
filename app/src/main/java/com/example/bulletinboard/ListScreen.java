@@ -8,8 +8,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 public class ListScreen extends Fragment {
 
@@ -37,5 +42,17 @@ public class ListScreen extends Fragment {
         if (btnFilter != null) {
             btnFilter.setOnClickListener(v -> new FilterPopup().show(getParentFragmentManager(), "FilterPopup"));
         }
+
+        DatabaseHandler db = Room.databaseBuilder(view.getContext(),
+                        DatabaseHandler.class, "DatabaseHandler")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration(true)
+                .build();
+
+        List<Event> events = db.eventDAO().getAllEvents();
+
+        RecyclerView rv = view.findViewById(R.id.rcv_eventList);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv.setAdapter(new EventAdaptor(events));
     }
 }
