@@ -11,6 +11,8 @@ fragment = "1.9.1"
 cardview = "1.0.0"
 roomCompiler = "2.8.2"
 recyclerview = "1.4.0"
+roomCommon = "2.8.5"
+roomRuntime = "2.8.5"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +26,8 @@ fragment = { group = "androidx.fragment", name = "fragment", version.ref = "frag
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
