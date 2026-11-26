@@ -3,12 +3,9 @@ package com.example.bulletinboard.database.entity;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(primaryKeys = {"OrganizationID", "UserID"})
 public class Follower
 {
-    @PrimaryKey
     public int OrganizationID;
-
-    @PrimaryKey
     public int UserID;
 }

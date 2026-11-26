@@ -15,12 +15,12 @@ public class User
     public String Email;
     public long Phone;
 
-    public User(String firstName, String lastName, String username, String email, long phone)
+    public User(String FirstName, String LastName, String Username, String Email, long Phone)
     {
-        this.FirstName = firstName;
-        this.LastName = lastName;
-        this.Username = username;
-        this.Email = email;
-        this.Phone = phone;
+        this.FirstName = FirstName;
+        this.LastName = LastName;
+        this.Username = Username;
+        this.Email = Email;
+        this.Phone = Phone;
     }
 }

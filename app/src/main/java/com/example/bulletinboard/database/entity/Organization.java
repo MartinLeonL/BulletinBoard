@@ -13,8 +13,10 @@ public class Organization
     public String Type;
     public String Description;
 
-    public Organization()
+    public Organization(String Name, String Type, String Description)
     {
-
+        this.Name = Name;
+        this.Description = Description;
+        this.Type = Type;
     }
 }

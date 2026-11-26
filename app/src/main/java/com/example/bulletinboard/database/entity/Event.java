@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey;
 public class Event
 {
     @PrimaryKey(autoGenerate = true)
-    public int eventID;
+    public int EventID;
+
+    public int OrganizationID;
 
     public int Type;
 
@@ -23,13 +25,17 @@ public class Event
     public long EndHour;
     public long EndMinute;
 
-    public Event(int type, String name, String description, String location, String thumbUrl, long endHour, long endMinute)
+    public Event(int OrganizationID, double LatitudeLocation, double LongitudeLocation, int Type, String Name, String Description, String Location, String ThumbUrl, long EndHour, long EndMinute)
     {
-        this.Name = name;
-        this.Description = description;
-        this.Location = location;
-        this.ThumbUrl = thumbUrl;
-        this.EndHour = endHour;
-        this.EndMinute = endMinute;
+        this.OrganizationID = OrganizationID;
+        this.LatitudeLocation = LatitudeLocation;
+        this.LongitudeLocation = LongitudeLocation;
+        this.Type = Type;
+        this.Name = Name;
+        this.Description = Description;
+        this.Location = Location;
+        this.ThumbUrl = ThumbUrl;
+        this.EndHour = EndHour;
+        this.EndMinute = EndMinute;
     }
 }
