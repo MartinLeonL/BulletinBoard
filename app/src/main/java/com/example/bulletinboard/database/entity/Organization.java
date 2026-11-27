@@ -9,6 +9,8 @@ public class Organization
     @PrimaryKey(autoGenerate = true)
     public int OrganizationID;
 
+    public int UserID; // Organizer ID
+
     public String Name;
     public String Type;
     public String Description;

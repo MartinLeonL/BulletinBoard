@@ -36,6 +36,10 @@ public interface OrganizationDAO
     @Query("SELECT * FROM Organization WHERE OrganizationID = :id")
     OrganizationWithDetails getOrganization(int id);
 
+    @Transaction
+    @Query("SELECT * FROM Organization WHERE Name = :name LIMIT 1")
+    OrganizationWithDetails getOrganization(String name);
+
     @Insert
     void addFollower(Follower follower);
 

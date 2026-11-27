@@ -26,9 +26,8 @@ public class OrganizationWithDetails
     public List<User> followers;
 
     @Relation(
-            parentColumn = "OrganizationID",
-            entityColumn = "UserID",
-            associateBy = @Junction(Organizer.class)
+            parentColumn = "UserID",
+            entityColumn = "UserID"
     )
-    public List<User> organizers;
+    public User organizer;
 }

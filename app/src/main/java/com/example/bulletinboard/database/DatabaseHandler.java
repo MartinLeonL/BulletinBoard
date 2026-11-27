@@ -10,6 +10,7 @@ import com.example.bulletinboard.database.dao.EventDAO;
 import com.example.bulletinboard.database.dao.OrganizationDAO;
 import com.example.bulletinboard.database.dao.UserDAO;
 import com.example.bulletinboard.database.entity.*;
+import com.example.bulletinboard.database.relations.OrganizationWithDetails;
 
 import java.util.List;
 
@@ -46,14 +47,11 @@ public abstract class DatabaseHandler extends RoomDatabase
         if(currentUser == null)
             return false;
 
-        List<Organizer> organizers = ref.organizationDAO().getAllOrganizers();
+        OrganizationWithDetails existingOrg = ref.organizationDAO().getOrganization(currentUser.Username);
 
-        for(Organizer o : organizers)
-        {
-            if(o.UserID == currentUser.UserID)
-                return true;
-        }
-
-        return false;
+        if(existingOrg == null)
+            return false;
+        else
+            return existingOrg.organizer.equals(currentUser);
     }
 }
