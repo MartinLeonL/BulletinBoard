@@ -66,16 +66,9 @@ public class StudentRegisterScreen extends Fragment {
 
         boolean exists = false;
 
-        for(User u : createdUsers)
-        {
-            if(u.Email.equals(etEmail.getText().toString()) || u.Username.equals(etUsername.getText().toString()));
-            {
-                exists = true;
-                break;
-            }
-        }
+        User existingUser = db.userDAO().getUser(etUsername.getText().toString(), etEmail.getText().toString());
 
-        if(!exists)
+        if(existingUser == null)
         {
             User newUser = new User(
                     etFirstName.getText().toString(),

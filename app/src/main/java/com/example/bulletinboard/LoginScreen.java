@@ -71,7 +71,7 @@ public class LoginScreen extends Fragment {
 
     private void attemptLogin(String password, String username)
     {
-        User user = db.userDAO().getUserByUsername(username);
+        User user = db.userDAO().getUser(username);
 
         if(user == null)
         {
