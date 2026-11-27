@@ -55,16 +55,12 @@ public class StudentRegisterScreen extends Fragment {
 
     private void attemptRegister(View view)
     {
-        List<User> createdUsers = db.userDAO().getAllUsers();
-
         EditText etFirstName = view.findViewById(R.id.et_firstName);
         EditText etLastName = view.findViewById(R.id.et_lastName);
 
         EditText etEmail = view.findViewById(R.id.et_createEmail);
         EditText etUsername = view.findViewById(R.id.et_createUsername);
         EditText etPassword = view.findViewById(R.id.et_createPassword);
-
-        boolean exists = false;
 
         User existingUser = db.userDAO().getUser(etUsername.getText().toString(), etEmail.getText().toString());
 
