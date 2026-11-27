@@ -125,7 +125,7 @@
                     android:layout_marginTop="8dp">
 
                     <EditText
-                        android:id="@+id/et_password"
+                        android:id="@+id/et_createPassword"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/bg_input_field"

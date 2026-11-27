@@ -30,7 +30,7 @@ public interface UserDAO
     @Query("SELECT * FROM User WHERE UserID = :id")
     User getUser(int id);
 
-    @Query("SELECT * FROM User WHERE Username = :username")
+    @Query("SELECT * FROM User WHERE Username = :username LIMIT 1")
     User getUserByUsername(String username);
 
     @Transaction

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.bulletinboard.database.DatabaseHandler;
+
 public class StudentAccountScreen extends Fragment {
 
     public StudentAccountScreen() {
@@ -29,13 +31,19 @@ public class StudentAccountScreen extends Fragment {
 
         Button btnSignOut = view.findViewById(R.id.btn_signOut);
         if (btnSignOut != null) {
-            btnSignOut.setOnClickListener(v -> navigateTo(new LoginScreen()));
+            btnSignOut.setOnClickListener(v -> logout());
         }
 
         Button btnTempOrgInfo = view.findViewById(R.id.btn_tempOrgInfo);
         if (btnTempOrgInfo != null) {
             btnTempOrgInfo.setOnClickListener(v -> new OrgInfoPopup().show(getParentFragmentManager(), "OrgInfoPopup"));
         }
+    }
+
+    private void logout()
+    {
+        DatabaseHandler.logout();
+        navigateTo(new LoginScreen());
     }
 
     private void navigateTo(Fragment fragment) {

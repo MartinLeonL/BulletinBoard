@@ -121,7 +121,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/et_createUsername3"
+                android:id="@+id/et_createEmail"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/bg_input_field"
@@ -152,7 +152,7 @@
                 android:layout_marginTop="8dp">
 
                 <EditText
-                    android:id="@+id/et_password"
+                    android:id="@+id/et_createPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_input_field"

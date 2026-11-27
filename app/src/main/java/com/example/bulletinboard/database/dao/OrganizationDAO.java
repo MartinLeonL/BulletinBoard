@@ -29,6 +29,10 @@ public interface OrganizationDAO
     List<OrganizationWithDetails> getAllOrganizations();
 
     @Transaction
+    @Query("SELECT * FROM Organizer")
+    List<Organizer> getAllOrganizers();
+
+    @Transaction
     @Query("SELECT * FROM Organization WHERE OrganizationID = :id")
     OrganizationWithDetails getOrganization(int id);
 

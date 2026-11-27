@@ -13,14 +13,16 @@ public class User
     public String LastName;
     public String Username;
     public String Email;
+    public String Password; // Should be stored as hash eventually....
     public long Phone;
 
-    public User(String FirstName, String LastName, String Username, String Email, long Phone)
+    public User(String FirstName, String LastName, String Username, String Email, String Password, long Phone)
     {
         this.FirstName = FirstName;
         this.LastName = LastName;
         this.Username = Username;
         this.Email = Email;
+        this.Password = Password;
         this.Phone = Phone;
     }
 }

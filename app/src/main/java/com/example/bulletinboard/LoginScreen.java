@@ -9,14 +9,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.bulletinboard.database.DatabaseHandler;
+import com.example.bulletinboard.database.entity.User;
+
+import java.util.List;
+
 public class LoginScreen extends Fragment {
 
     private boolean isPasswordVisible = false;
+    DatabaseHandler db;
 
     public LoginScreen() {
         // Required empty public constructor
@@ -25,6 +32,7 @@ public class LoginScreen extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        db = DatabaseHandler.build(getContext());
         return inflater.inflate(R.layout.fragment_login_screen, container, false);
     }
 
@@ -35,10 +43,12 @@ public class LoginScreen extends Fragment {
         View btnLogin = view.findViewById(R.id.btn_login);
         Button btnToRegister = view.findViewById(R.id.btn_toRegister);
         ImageButton btnTogglePassword = view.findViewById(R.id.btn_togglePassword);
-        EditText etPassword = view.findViewById(R.id.et_password);
+        EditText etPassword = view.findViewById(R.id.et_createPassword);
+        EditText etUsername = view.findViewById(R.id.et_username);
 
-        if (btnLogin != null) {
-            btnLogin.setOnClickListener(v -> navigateTo(new MapScreen()));
+        if (btnLogin != null)
+        {
+            btnLogin.setOnClickListener(v -> attemptLogin(etPassword.getText().toString(), etUsername.getText().toString()));
         }
 
         if (btnToRegister != null) {
@@ -56,6 +66,24 @@ public class LoginScreen extends Fragment {
                 }
                 etPassword.setSelection(etPassword.getText().length());
             });
+        }
+    }
+
+    private void attemptLogin(String password, String username)
+    {
+        User user = db.userDAO().getUserByUsername(username);
+
+        if(user == null)
+        {
+            Toast.makeText(getContext(), "Could not find an account with these details...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(user.Password.equals(password))
+        {
+            DatabaseHandler.loginAs(user);
+            navigateTo(new MapScreen());
+            return;
         }
     }
 
