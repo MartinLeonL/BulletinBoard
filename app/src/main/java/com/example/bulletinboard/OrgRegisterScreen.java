@@ -67,7 +67,7 @@ public class OrgRegisterScreen extends Fragment {
         EditText etPassword = view.findViewById(R.id.et_createPassword);
 
         String orgName = etOrgName != null ? etOrgName.getText().toString().trim() : "";
-        String email = etEmail != null ? etEmail.getText().toString().trim() : "";
+        String email = etEmail != null ? etEmail.getText().toString().trim().toLowerCase() : "";
         String password = etPassword != null ? etPassword.getText().toString().trim() : "";
 
         if (orgName.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -75,7 +75,7 @@ public class OrgRegisterScreen extends Fragment {
             return;
         }
 
-        if (!email.toLowerCase().endsWith("@ucf.edu")) {
+        if (!email.endsWith("@ucf.edu")) {
             Toast.makeText(getContext(), "Must use a valid @ucf.edu email address.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -87,32 +87,47 @@ public class OrgRegisterScreen extends Fragment {
 
         String orgNameLower = orgName.toLowerCase();
 
-        // Check if Organization Name is taken
+        // 1. Check if Organization Name is taken
         FirebaseHelper.getDb().collection("users")
                 .whereEqualTo("orgNameLower", orgNameLower)
                 .get()
-                .addOnSuccessListener(query -> {
-                    if (!query.isEmpty()) {
+                .addOnSuccessListener(orgQuery -> {
+                    if (!orgQuery.isEmpty()) {
                         Toast.makeText(getContext(), "Organization name is already registered.", Toast.LENGTH_SHORT).show();
                     } else {
-                        // Register in Firebase Auth
-                        FirebaseHelper.getAuth().createUserWithEmailAndPassword(email, password)
-                                .addOnSuccessListener(authResult -> {
-                                    FirebaseUser fbUser = authResult.getUser();
-                                    if (fbUser == null) return;
-                                    String uid = fbUser.getUid();
-                                    User newOrg = new User(uid, "org", email.toLowerCase(), orgName, orgNameLower, "No description provided yet.", 0);
+                        // 2. Check if an organization account already exists for this email
+                        FirebaseHelper.getDb().collection("users")
+                                .whereEqualTo("email", email)
+                                .whereEqualTo("accountType", "org")
+                                .get()
+                                .addOnSuccessListener(emailQuery -> {
+                                    if (!emailQuery.isEmpty()) {
+                                        Toast.makeText(getContext(), "An organization account is already registered with this email.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Register in Firebase Auth using org alias email
+                                        String authEmail = email.replace("@ucf.edu", "+org@ucf.edu");
 
-                                    // Store org profile in Firestore
-                                    FirebaseHelper.getDb().collection("users").document(uid)
-                                            .set(newOrg)
-                                            .addOnSuccessListener(aVoid -> {
-                                                Toast.makeText(getContext(), "Organization registered successfully!", Toast.LENGTH_SHORT).show();
-                                                navigateTo(new MapScreen());
-                                            })
-                                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                        FirebaseHelper.getAuth().createUserWithEmailAndPassword(authEmail, password)
+                                                .addOnSuccessListener(authResult -> {
+                                                    FirebaseUser fbUser = authResult.getUser();
+                                                    if (fbUser == null) return;
+                                                    String uid = fbUser.getUid();
+                                                    User newOrg = new User(uid, "org", email, orgName, orgNameLower, "No description provided yet.", 0);
+                                                    newOrg.setAuthEmail(authEmail);
+
+                                                    // Store org profile in Firestore
+                                                    FirebaseHelper.getDb().collection("users").document(uid)
+                                                            .set(newOrg)
+                                                            .addOnSuccessListener(aVoid -> {
+                                                                Toast.makeText(getContext(), "Organization registered successfully!", Toast.LENGTH_SHORT).show();
+                                                                navigateTo(new MapScreen());
+                                                            })
+                                                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                                })
+                                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Auth failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                    }
                                 })
-                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Auth failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());

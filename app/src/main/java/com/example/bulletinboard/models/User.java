@@ -7,6 +7,7 @@ public class User {
     private String uid;
     private String accountType; // "student" | "org"
     private String email;
+    private String authEmail;
     private String firstName;
     private String lastName;
     private String username;
@@ -26,6 +27,7 @@ public class User {
         this.uid = uid;
         this.accountType = accountType;
         this.email = email;
+        this.authEmail = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -38,6 +40,7 @@ public class User {
         this.uid = uid;
         this.accountType = accountType;
         this.email = email;
+        this.authEmail = email;
         this.orgName = orgName;
         this.orgNameLower = orgNameLower;
         this.description = description;
@@ -67,6 +70,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAuthEmail() {
+        return authEmail != null ? authEmail : email;
+    }
+
+    public void setAuthEmail(String authEmail) {
+        this.authEmail = authEmail;
     }
 
     public String getFirstName() {

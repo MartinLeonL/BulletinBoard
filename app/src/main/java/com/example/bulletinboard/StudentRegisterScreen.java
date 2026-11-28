@@ -70,7 +70,7 @@ public class StudentRegisterScreen extends Fragment {
 
         String firstName = etFirstName != null ? etFirstName.getText().toString().trim() : "";
         String lastName = etLastName != null ? etLastName.getText().toString().trim() : "";
-        String email = etEmail != null ? etEmail.getText().toString().trim() : "";
+        String email = etEmail != null ? etEmail.getText().toString().trim().toLowerCase() : "";
         String username = etUsername != null ? etUsername.getText().toString().trim() : "";
         String password = etPassword != null ? etPassword.getText().toString().trim() : "";
 
@@ -79,7 +79,7 @@ public class StudentRegisterScreen extends Fragment {
             return;
         }
 
-        if (!email.toLowerCase().endsWith("@ucf.edu")) {
+        if (!email.endsWith("@ucf.edu")) {
             Toast.makeText(getContext(), "Must use a valid @ucf.edu email address.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -91,32 +91,45 @@ public class StudentRegisterScreen extends Fragment {
 
         String usernameLower = username.toLowerCase();
 
-        // Check if username is taken
+        // 1. Check if username is taken
         FirebaseHelper.getDb().collection("users")
                 .whereEqualTo("usernameLower", usernameLower)
                 .get()
-                .addOnSuccessListener(query -> {
-                    if (!query.isEmpty()) {
+                .addOnSuccessListener(usernameQuery -> {
+                    if (!usernameQuery.isEmpty()) {
                         Toast.makeText(getContext(), "Username is already taken.", Toast.LENGTH_SHORT).show();
                     } else {
-                        // Register in Firebase Auth
-                        FirebaseHelper.getAuth().createUserWithEmailAndPassword(email, password)
-                                .addOnSuccessListener(authResult -> {
-                                    FirebaseUser fbUser = authResult.getUser();
-                                    if (fbUser == null) return;
-                                    String uid = fbUser.getUid();
-                                    User newUser = new User(uid, "student", email.toLowerCase(), firstName, lastName, username, usernameLower);
+                        // 2. Check if a student account already exists for this email
+                        FirebaseHelper.getDb().collection("users")
+                                .whereEqualTo("email", email)
+                                .whereEqualTo("accountType", "student")
+                                .get()
+                                .addOnSuccessListener(emailQuery -> {
+                                    if (!emailQuery.isEmpty()) {
+                                        Toast.makeText(getContext(), "A student account is already registered with this email.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Register in Firebase Auth
+                                        FirebaseHelper.getAuth().createUserWithEmailAndPassword(email, password)
+                                                .addOnSuccessListener(authResult -> {
+                                                    FirebaseUser fbUser = authResult.getUser();
+                                                    if (fbUser == null) return;
+                                                    String uid = fbUser.getUid();
+                                                    User newUser = new User(uid, "student", email, firstName, lastName, username, usernameLower);
+                                                    newUser.setAuthEmail(email);
 
-                                    // Store user profile in Firestore
-                                    FirebaseHelper.getDb().collection("users").document(uid)
-                                            .set(newUser)
-                                            .addOnSuccessListener(aVoid -> {
-                                                Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
-                                                navigateTo(new MapScreen());
-                                            })
-                                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                                    // Store user profile in Firestore
+                                                    FirebaseHelper.getDb().collection("users").document(uid)
+                                                            .set(newUser)
+                                                            .addOnSuccessListener(aVoid -> {
+                                                                Toast.makeText(getContext(), "Student registration successful!", Toast.LENGTH_SHORT).show();
+                                                                navigateTo(new MapScreen());
+                                                            })
+                                                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                                })
+                                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Auth failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                    }
                                 })
-                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Auth failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());

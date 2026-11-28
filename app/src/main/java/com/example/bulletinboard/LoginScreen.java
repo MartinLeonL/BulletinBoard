@@ -80,22 +80,40 @@ public class LoginScreen extends Fragment {
 
         String inputLower = identifier.toLowerCase();
 
-        // If user typed an email directly
+        // If user typed an email directly (e.g. john@ucf.edu)
         if (inputLower.contains("@")) {
-            signInWithEmail(inputLower, password);
+            // Try signing in as student email first
+            FirebaseHelper.getAuth().signInWithEmailAndPassword(inputLower, password)
+                    .addOnSuccessListener(authResult -> {
+                        Toast.makeText(getContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                        navigateTo(new MapScreen());
+                    })
+                    .addOnFailureListener(studentAuthErr -> {
+                        // If student auth failed, try signing in as org auth email
+                        String orgAuthEmail = inputLower.replace("@ucf.edu", "+org@ucf.edu");
+                        FirebaseHelper.getAuth().signInWithEmailAndPassword(orgAuthEmail, password)
+                                .addOnSuccessListener(authResult -> {
+                                    Toast.makeText(getContext(), "Logged in successfully as Organization!", Toast.LENGTH_SHORT).show();
+                                    navigateTo(new MapScreen());
+                                })
+                                .addOnFailureListener(orgAuthErr ->
+                                        Toast.makeText(getContext(), "Login failed: Incorrect email or password.", Toast.LENGTH_SHORT).show());
+                    });
             return;
         }
 
-        // Search Firestore for matching student username or org name
+        // Search Firestore for matching student username or organization name
         FirebaseHelper.getDb().collection("users")
                 .whereEqualTo("usernameLower", inputLower)
                 .get()
                 .addOnSuccessListener(usernameQuery -> {
                     if (!usernameQuery.isEmpty()) {
                         DocumentSnapshot doc = usernameQuery.getDocuments().get(0);
-                        String email = doc.getString("email");
-                        if (email != null) {
-                            signInWithEmail(email, password);
+                        String docAuthEmail = doc.getString("authEmail");
+                        if (docAuthEmail == null) docAuthEmail = doc.getString("email");
+
+                        if (docAuthEmail != null) {
+                            signInWithEmail(docAuthEmail, password);
                         } else {
                             Toast.makeText(getContext(), "User email not found.", Toast.LENGTH_SHORT).show();
                         }
@@ -107,9 +125,11 @@ public class LoginScreen extends Fragment {
                                 .addOnSuccessListener(orgQuery -> {
                                     if (!orgQuery.isEmpty()) {
                                         DocumentSnapshot doc = orgQuery.getDocuments().get(0);
-                                        String email = doc.getString("email");
-                                        if (email != null) {
-                                            signInWithEmail(email, password);
+                                        String docAuthEmail = doc.getString("authEmail");
+                                        if (docAuthEmail == null) docAuthEmail = doc.getString("email");
+
+                                        if (docAuthEmail != null) {
+                                            signInWithEmail(docAuthEmail, password);
                                         } else {
                                             Toast.makeText(getContext(), "Org email not found.", Toast.LENGTH_SHORT).show();
                                         }
@@ -123,8 +143,8 @@ public class LoginScreen extends Fragment {
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void signInWithEmail(String email, String password) {
-        FirebaseHelper.getAuth().signInWithEmailAndPassword(email, password)
+    private void signInWithEmail(String authEmail, String password) {
+        FirebaseHelper.getAuth().signInWithEmailAndPassword(authEmail, password)
                 .addOnSuccessListener(authResult -> {
                     Toast.makeText(getContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
                     navigateTo(new MapScreen());
