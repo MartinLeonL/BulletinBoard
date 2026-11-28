@@ -1,12 +1,22 @@
 package com.example.bulletinboard;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.bulletinboard.models.Event;
@@ -22,6 +32,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.CopyrightOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +44,27 @@ public class MapScreen extends Fragment {
     private ListenerRegistration eventsRegistration;
     private final Map<Marker, String> markerEventMap = new HashMap<>();
 
+    private MyLocationNewOverlay locationOverlay;
+    private ActivityResultLauncher<String[]> locationPermissionLauncher;
+
     public MapScreen() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        locationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    Boolean fineGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+                    Boolean coarseGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
+                    if ((fineGranted != null && fineGranted) || (coarseGranted != null && coarseGranted)) {
+                        enableUserLocation();
+                    }
+                }
+        );
     }
 
     @Override
@@ -61,7 +92,6 @@ public class MapScreen extends Fragment {
 
         map = view.findViewById(R.id.mapView);
         if (map != null) {
-            // OpenStreetMap France (OSMFR): 100% free public HTTPS tile source (No API key required)
             OnlineTileSourceBase osmFrSource = new XYTileSource(
                     "OSMFR",
                     0, 19, 256, ".png",
@@ -80,8 +110,58 @@ public class MapScreen extends Fragment {
             map.getController().setZoom(16.0);
             map.getController().setCenter(new GeoPoint(28.6024, -81.2001));
 
+            // User Location Overlay
+            locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(requireContext()), map);
+            map.getOverlays().add(locationOverlay);
+
+            checkAndEnableLocation();
             loadEvents();
         }
+    }
+
+    private void checkAndEnableLocation() {
+        if (getContext() == null) return;
+
+        boolean finePerm = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean coarsePerm = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        if (finePerm || coarsePerm) {
+            enableUserLocation();
+        } else {
+            locationPermissionLauncher.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        }
+    }
+
+    private void enableUserLocation() {
+        if (locationOverlay != null && getContext() != null) {
+            Bitmap blueDot = getBitmapFromVectorDrawable(requireContext(), R.drawable.ic_blue_dot, 22, 22);
+            if (blueDot != null) {
+                locationOverlay.setPersonIcon(blueDot);
+                locationOverlay.setDirectionIcon(blueDot);
+                locationOverlay.setPersonAnchor(0.5f, 0.5f);
+                locationOverlay.setDirectionAnchor(0.5f, 0.5f);
+            }
+
+            locationOverlay.enableMyLocation();
+        }
+    }
+
+    private Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, int widthDp, int heightDp) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        if (drawable == null) return null;
+
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int widthPx = Math.round(widthDp * metrics.density);
+        int heightPx = Math.round(heightDp * metrics.density);
+
+        Bitmap bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
     private void addPin(double latitude, double longitude, String title, String snippet, String eventId) {
@@ -118,6 +198,9 @@ public class MapScreen extends Fragment {
                     map.getOverlays().clear();
                     markerEventMap.clear();
                     map.getOverlays().add(new CopyrightOverlay(requireContext()));
+                    if (locationOverlay != null) {
+                        map.getOverlays().add(locationOverlay);
+                    }
 
                     long now = System.currentTimeMillis();
 
@@ -156,10 +239,14 @@ public class MapScreen extends Fragment {
         if (map != null) {
             map.onResume();
         }
+        enableUserLocation();
     }
 
     @Override
     public void onPause() {
+        if (locationOverlay != null) {
+            locationOverlay.disableMyLocation();
+        }
         if (map != null) {
             map.onPause();
         }
@@ -171,6 +258,10 @@ public class MapScreen extends Fragment {
         if (eventsRegistration != null) {
             eventsRegistration.remove();
             eventsRegistration = null;
+        }
+        if (locationOverlay != null) {
+            locationOverlay.disableMyLocation();
+            locationOverlay = null;
         }
         markerEventMap.clear();
         if (map != null) {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Outer translucent blue ring -->
+    <path
+        android:fillColor="#401976D2"
+        android:pathData="M12,12m-11,0a11,11 0 1,1 22,0a11,11 0 1,1 -22,0" />
+
+    <!-- Solid blue circle -->
+    <path
+        android:fillColor="#1976D2"
+        android:pathData="M12,12m-7,0a7,7 0 1,1 14,0a7,7 0 1,1 -14,0" />
+
+    <!-- White inner core -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,12m-3,0a3,3 0 1,1 6,0a3,3 0 1,1 -6,0" />
+</vector>
