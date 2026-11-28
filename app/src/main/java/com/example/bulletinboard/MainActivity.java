@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new MapScreen());
                 return true;
             } else if (itemId == R.id.btn_account) {
-                replaceFragment(new StudentAccountScreen());
+                navigateToAccountScreen();
                 return true;
             }
             return false;
@@ -65,6 +65,30 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             updateBottomNavForFragment(initialFragment);
         }
+    }
+
+    public void navigateToAccountScreen() {
+        String uid = FirebaseHelper.getCurrentUid();
+        if (uid == null) {
+            replaceFragment(new LoginScreen());
+            return;
+        }
+
+        FirebaseHelper.getDb().collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String accountType = doc.getString("accountType");
+                        if ("org".equalsIgnoreCase(accountType)) {
+                            replaceFragment(new OrgAccountScreen());
+                        } else {
+                            replaceFragment(new StudentAccountScreen());
+                        }
+                    } else {
+                        replaceFragment(new StudentAccountScreen());
+                    }
+                })
+                .addOnFailureListener(e -> replaceFragment(new StudentAccountScreen()));
     }
 
     public void replaceFragment(Fragment fragment) {
