@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.bulletinboard.database.DatabaseHandler;
-
 public class StudentAccountScreen extends Fragment {
 
     public StudentAccountScreen() {
@@ -40,9 +38,8 @@ public class StudentAccountScreen extends Fragment {
         }
     }
 
-    private void logout()
-    {
-        DatabaseHandler.logout();
+    private void logout() {
+        FirebaseHelper.logout();
         navigateTo(new LoginScreen());
     }
 

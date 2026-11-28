@@ -10,15 +10,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
-import com.example.bulletinboard.database.DatabaseHandler;
-import com.example.bulletinboard.database.entity.Event;
+import com.example.bulletinboard.models.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListScreen extends Fragment {
+
+    private EventAdaptor adaptor;
+    private List<Event> eventList;
 
     public ListScreen() {
         // Required empty public constructor
@@ -45,16 +47,13 @@ public class ListScreen extends Fragment {
             btnFilter.setOnClickListener(v -> new FilterPopup().show(getParentFragmentManager(), "FilterPopup"));
         }
 
-        DatabaseHandler db = Room.databaseBuilder(view.getContext(),
-                        DatabaseHandler.class, "DatabaseHandler")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration(true)
-                .build();
-
-        List<Event> events = db.eventDAO().getAllEvents();
+        eventList = new ArrayList<>();
+        adaptor = new EventAdaptor(eventList);
 
         RecyclerView rv = view.findViewById(R.id.rcv_eventList);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(new EventAdaptor(events));
+        if (rv != null) {
+            rv.setLayoutManager(new LinearLayoutManager(getContext()));
+            rv.setAdapter(adaptor);
+        }
     }
 }

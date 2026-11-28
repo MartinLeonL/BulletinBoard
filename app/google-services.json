@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101697443996",
+    "project_id": "ucf-bulletin-board",
+    "storage_bucket": "ucf-bulletin-board.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101697443996:android:59e2fed9758aa8cdc8f559",
+        "android_client_info": {
+          "package_name": "com.example.bulletinboard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1kb3JGPAe4ID1whAxZz-KdfXjncbfd9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -30,7 +30,10 @@ public class OrgAccountScreen extends Fragment {
         Button btnSignOut = view.findViewById(R.id.btn_signOut);
 
         if (btnSignOut != null) {
-            btnSignOut.setOnClickListener(v -> navigateTo(new LoginScreen()));
+            btnSignOut.setOnClickListener(v -> {
+                FirebaseHelper.logout();
+                navigateTo(new LoginScreen());
+            });
         }
     }
 
