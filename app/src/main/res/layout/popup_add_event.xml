@@ -1,34 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="24dp"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="16dp"
     tools:context=".AddEventPopup">
 
-    <Button
-        android:id="@+id/btn_close"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:text="@string/close"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/add_event"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_close" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_yellow_card"
+            android:fadeScrollbars="false"
+            android:fillViewport="true"
+            android:scrollbarSize="8dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbarThumbVertical="@drawable/bg_scrollbar_thumb"
+            android:scrollbars="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="20dp">
+
+                <!-- Close Button -->
+                <TextView
+                    android:id="@+id/btn_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:padding="8dp"
+                    android:text="@string/close"
+                    android:textColor="@color/black"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/tv_popupTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/add_event_caps"
+                    android:textColor="@color/black"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <!-- NAME -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/name_label"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_eventName"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:hint="@string/name"
+                    android:inputType="text"
+                    android:paddingHorizontal="14dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#777777"
+                    android:textSize="16sp"
+                    tools:ignore="Autofill" />
+
+                <!-- CATEGORY -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/category_label"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <!-- Category Chips Row 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_catClub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/intel_one_mono"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="6dp"
+                        android:text="CLUB"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/btn_catFood"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/intel_one_mono"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="6dp"
+                        android:text="FOOD"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/btn_catSport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/intel_one_mono"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="6dp"
+                        android:text="SPORT"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <!-- Category Chips Row 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_catSocial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/intel_one_mono"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="6dp"
+                        android:text="SOCIAL"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/btn_catStudentGov"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/intel_one_mono"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="6dp"
+                        android:text="STUDENT GOV"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <!-- Category Chips Row 3 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_catOther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/intel_one_mono"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="6dp"
+                        android:text="OTHER"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <!-- LOCATION -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/location_label"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_eventLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:hint="@string/location_hint"
+                    android:inputType="text"
+                    android:paddingHorizontal="14dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#777777"
+                    android:textSize="16sp"
+                    tools:ignore="Autofill" />
+
+                <!-- END TIME -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/end_time_label"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_endTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field"
+                    android:focusable="false"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:hint="@string/time_hint"
+                    android:inputType="none"
+                    android:paddingHorizontal="14dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#777777"
+                    android:textSize="16sp"
+                    tools:ignore="Autofill" />
+
+                <!-- DESCRIPTION -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/description_label"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/et_eventDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:gravity="top|start"
+                    android:hint="@string/description_hint"
+                    android:inputType="textMultiLine"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#777777"
+                    android:textSize="16sp"
+                    tools:ignore="Autofill" />
+
+                <!-- PHOTO -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/photo_label"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btn_uploadPhoto"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_login_button"
+                        android:contentDescription="@string/photo_label"
+                        android:src="@drawable/ic_upload" />
+
+                    <ImageView
+                        android:id="@+id/iv_photoPreview"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="16dp"
+                        android:contentDescription="@string/photo_label"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- POST BUTTON -->
+                <android.widget.Button
+                    android:id="@+id/btn_postEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_login_button"
+                    android:fontFamily="@font/intel_one_mono"
+                    android:text="@string/post_btn_text"
+                    android:textColor="@color/bright_yellow"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>
