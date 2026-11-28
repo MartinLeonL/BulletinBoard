@@ -1,11 +1,16 @@
 package com.example.bulletinboard;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -24,6 +29,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.bulletinboard.models.Event;
@@ -284,10 +290,10 @@ public class AddEventPopup extends DialogFragment {
 
     private void attemptPostEvent() {
         String name = etEventName != null ? etEventName.getText().toString().trim() : "";
-        String location = etEventLocation != null ? etEventLocation.getText().toString().trim() : "";
+        String locationLabel = etEventLocation != null ? etEventLocation.getText().toString().trim() : "";
         String description = etEventDescription != null ? etEventDescription.getText().toString().trim() : "";
 
-        if (name.isEmpty() || location.isEmpty()) {
+        if (name.isEmpty() || locationLabel.isEmpty()) {
             Toast.makeText(getContext(), "Name and Location are required (*)", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -317,35 +323,61 @@ public class AddEventPopup extends DialogFragment {
                         }
                     }
 
-                    // UCF Main Campus default coordinates
-                    double latitude = 28.6024;
-                    double longitude = -81.2001;
+                    double lat = 28.6024;
+                    double lng = -81.2001;
 
-                    Event newEvent = new Event(
-                            null,
-                            name,
-                            selectedCategory,
-                            location,
-                            latitude,
-                            longitude,
-                            selectedEndTime,
-                            description,
-                            photoBase64,
-                            currentUid,
-                            postedByName,
-                            postedByType,
-                            Timestamp.now(),
-                            true
-                    );
+                    // Fetch current user GPS location
+                    if (getContext() != null
+                            && (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                            || ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
 
-                    FirebaseHelper.getDb().collection("events")
-                            .add(newEvent)
-                            .addOnSuccessListener(ref -> {
-                                Toast.makeText(getContext(), "Event posted successfully!", Toast.LENGTH_SHORT).show();
-                                dismiss();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to post event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                        if (lm != null) {
+                            try {
+                                Location gpsLoc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                Location netLoc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                Location bestLoc = gpsLoc != null ? gpsLoc : netLoc;
+
+                                if (bestLoc != null) {
+                                    lat = bestLoc.getLatitude();
+                                    lng = bestLoc.getLongitude();
+                                }
+                            } catch (SecurityException ignored) {}
+                        }
+                    }
+
+                    saveEventToFirestore(currentUid, postedByName, postedByType, name, locationLabel, description, lat, lng);
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to read profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveEventToFirestore(String currentUid, String postedByName, String postedByType,
+                                      String name, String locationLabel, String description,
+                                      double latitude, double longitude) {
+
+        Event newEvent = new Event(
+                null,
+                name,
+                selectedCategory,
+                locationLabel,
+                latitude,
+                longitude,
+                selectedEndTime,
+                description,
+                photoBase64,
+                currentUid,
+                postedByName,
+                postedByType,
+                Timestamp.now(),
+                true
+        );
+
+        FirebaseHelper.getDb().collection("events")
+                .add(newEvent)
+                .addOnSuccessListener(ref -> {
+                    Toast.makeText(getContext(), "Event posted successfully!", Toast.LENGTH_SHORT).show();
+                    dismiss();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to post event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
