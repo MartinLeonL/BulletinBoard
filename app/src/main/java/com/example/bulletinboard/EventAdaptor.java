@@ -1,12 +1,13 @@
 package com.example.bulletinboard;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bulletinboard.models.Event;
@@ -14,6 +15,10 @@ import com.example.bulletinboard.models.Event;
 import java.util.List;
 
 public class EventAdaptor extends RecyclerView.Adapter<EventAdaptor.CustomViewHolder> {
+
+    public interface OnItemClickListener {
+        void onItemClick(Event event);
+    }
 
     public static class CustomViewHolder extends RecyclerView.ViewHolder {
 
@@ -30,9 +35,14 @@ public class EventAdaptor extends RecyclerView.Adapter<EventAdaptor.CustomViewHo
     }
 
     private List<Event> events;
+    private OnItemClickListener listener;
 
     public EventAdaptor(List<Event> events) {
         this.events = events;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     public void setEvents(List<Event> events) {
@@ -56,33 +66,39 @@ public class EventAdaptor extends RecyclerView.Adapter<EventAdaptor.CustomViewHo
         holder.locationView.setText(currEvent.getLocationLabel() != null ? currEvent.getLocationLabel() : "");
 
         TextView typeText = holder.typeView;
-        String category = currEvent.getCategory();
+        String rawCategory = currEvent.getCategory();
+        String displayCategory = (rawCategory == null || rawCategory.isEmpty()) ? "OTHER" : rawCategory;
 
-        if (category == null) {
-            category = "OTHER";
-        }
+        typeText.setText(displayCategory);
 
-        typeText.setText(category);
+        int color = getColorForCategory(displayCategory);
+        GradientDrawable badgeShape = new GradientDrawable();
+        badgeShape.setShape(GradientDrawable.RECTANGLE);
+        badgeShape.setCornerRadius(20f);
+        badgeShape.setColor(color);
+        typeText.setBackground(badgeShape);
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(currEvent);
+            }
+        });
+    }
+
+    private int getColorForCategory(String category) {
         switch (category.toUpperCase()) {
             case "CLUB":
-                typeText.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.bright_purple));
-                break;
+                return Color.parseColor("#8A2BE2"); // Purple
             case "FOOD":
-                typeText.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.bright_red));
-                break;
+                return Color.parseColor("#D32F2F"); // Red
             case "SPORT":
-                typeText.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.lime_green));
-                break;
+                return Color.parseColor("#388E3C"); // Green
             case "SOCIAL":
-                typeText.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.bright_orange));
-                break;
+                return Color.parseColor("#F57C00"); // Orange
             case "STUDENT GOV":
-                typeText.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.bright_blue));
-                break;
-            default: // OTHER
-                typeText.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.bright_grey));
-                break;
+                return Color.parseColor("#1976D2"); // Blue
+            default:
+                return Color.parseColor("#616161"); // Gray
         }
     }
 
