@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class LoginScreen extends Fragment {
 
@@ -38,9 +41,13 @@ public class LoginScreen extends Fragment {
         Button btnToRegister = view.findViewById(R.id.btn_toRegister);
         ImageButton btnTogglePassword = view.findViewById(R.id.btn_togglePassword);
         EditText etPassword = view.findViewById(R.id.et_createPassword);
+        EditText etUsername = view.findViewById(R.id.et_username);
 
-        if (btnLogin != null) {
-            btnLogin.setOnClickListener(v -> navigateTo(new MapScreen()));
+        if (btnLogin != null && etUsername != null && etPassword != null) {
+            btnLogin.setOnClickListener(v -> attemptLogin(
+                    etUsername.getText().toString().trim(),
+                    etPassword.getText().toString().trim()
+            ));
         }
 
         if (btnToRegister != null) {
@@ -63,6 +70,66 @@ public class LoginScreen extends Fragment {
                 etPassword.setSelection(etPassword.getText().length());
             });
         }
+    }
+
+    private void attemptLogin(String identifier, String password) {
+        if (identifier.isEmpty() || password.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String inputLower = identifier.toLowerCase();
+
+        // If user typed an email directly
+        if (inputLower.contains("@")) {
+            signInWithEmail(inputLower, password);
+            return;
+        }
+
+        // Search Firestore for matching student username or org name
+        FirebaseHelper.getDb().collection("users")
+                .whereEqualTo("usernameLower", inputLower)
+                .get()
+                .addOnSuccessListener(usernameQuery -> {
+                    if (!usernameQuery.isEmpty()) {
+                        DocumentSnapshot doc = usernameQuery.getDocuments().get(0);
+                        String email = doc.getString("email");
+                        if (email != null) {
+                            signInWithEmail(email, password);
+                        } else {
+                            Toast.makeText(getContext(), "User email not found.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        // Check if it matches an organization name
+                        FirebaseHelper.getDb().collection("users")
+                                .whereEqualTo("orgNameLower", inputLower)
+                                .get()
+                                .addOnSuccessListener(orgQuery -> {
+                                    if (!orgQuery.isEmpty()) {
+                                        DocumentSnapshot doc = orgQuery.getDocuments().get(0);
+                                        String email = doc.getString("email");
+                                        if (email != null) {
+                                            signInWithEmail(email, password);
+                                        } else {
+                                            Toast.makeText(getContext(), "Org email not found.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), "Username or Organization not found.", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void signInWithEmail(String email, String password) {
+        FirebaseHelper.getAuth().signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(authResult -> {
+                    Toast.makeText(getContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                    navigateTo(new MapScreen());
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void navigateTo(Fragment fragment) {

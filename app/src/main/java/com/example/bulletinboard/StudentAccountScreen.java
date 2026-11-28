@@ -1,15 +1,18 @@
 package com.example.bulletinboard;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import com.example.bulletinboard.models.User;
 
 public class StudentAccountScreen extends Fragment {
 
@@ -36,6 +39,35 @@ public class StudentAccountScreen extends Fragment {
         if (btnTempOrgInfo != null) {
             btnTempOrgInfo.setOnClickListener(v -> new OrgInfoPopup().show(getParentFragmentManager(), "OrgInfoPopup"));
         }
+
+        loadUserProfile(view);
+    }
+
+    private void loadUserProfile(View view) {
+        String uid = FirebaseHelper.getCurrentUid();
+        if (uid == null) {
+            navigateTo(new LoginScreen());
+            return;
+        }
+
+        TextView tvUsernameTitle = view.findViewById(R.id.username_title);
+        TextView tvAccountType = view.findViewById(R.id.username);
+
+        FirebaseHelper.getDb().collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        User user = doc.toObject(User.class);
+                        if (user != null && tvUsernameTitle != null) {
+                            String displayName = user.getUsername() != null ? user.getUsername() : user.getEmail();
+                            tvUsernameTitle.setText(displayName);
+                        }
+                        if (tvAccountType != null) {
+                            tvAccountType.setText("(Student)");
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
     private void logout() {

@@ -8,10 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.bulletinboard.models.User;
+import com.google.firebase.auth.FirebaseUser;
 
 public class OrgRegisterScreen extends Fragment {
 
@@ -34,7 +39,7 @@ public class OrgRegisterScreen extends Fragment {
         Button btnToStudentRegister = view.findViewById(R.id.btn_toStudentRegister);
 
         if (btnRegister != null) {
-            btnRegister.setOnClickListener(v -> navigateTo(new MapScreen()));
+            btnRegister.setOnClickListener(v -> attemptRegister(view));
         }
 
         if (btnToLogin != null) {
@@ -54,6 +59,63 @@ public class OrgRegisterScreen extends Fragment {
             btnToStudentRegister.setPaintFlags(btnToStudentRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             btnToStudentRegister.setOnClickListener(v -> navigateTo(new StudentRegisterScreen()));
         }
+    }
+
+    private void attemptRegister(View view) {
+        EditText etOrgName = view.findViewById(R.id.et_createUsername);
+        EditText etEmail = view.findViewById(R.id.et_createEmail);
+        EditText etPassword = view.findViewById(R.id.et_createPassword);
+
+        String orgName = etOrgName != null ? etOrgName.getText().toString().trim() : "";
+        String email = etEmail != null ? etEmail.getText().toString().trim() : "";
+        String password = etPassword != null ? etPassword.getText().toString().trim() : "";
+
+        if (orgName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!email.toLowerCase().endsWith("@ucf.edu")) {
+            Toast.makeText(getContext(), "Must use a valid @ucf.edu email address.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            Toast.makeText(getContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String orgNameLower = orgName.toLowerCase();
+
+        // Check if Organization Name is taken
+        FirebaseHelper.getDb().collection("users")
+                .whereEqualTo("orgNameLower", orgNameLower)
+                .get()
+                .addOnSuccessListener(query -> {
+                    if (!query.isEmpty()) {
+                        Toast.makeText(getContext(), "Organization name is already registered.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Register in Firebase Auth
+                        FirebaseHelper.getAuth().createUserWithEmailAndPassword(email, password)
+                                .addOnSuccessListener(authResult -> {
+                                    FirebaseUser fbUser = authResult.getUser();
+                                    if (fbUser == null) return;
+                                    String uid = fbUser.getUid();
+                                    User newOrg = new User(uid, "org", email.toLowerCase(), orgName, orgNameLower, "No description provided yet.", 0);
+
+                                    // Store org profile in Firestore
+                                    FirebaseHelper.getDb().collection("users").document(uid)
+                                            .set(newOrg)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(getContext(), "Organization registered successfully!", Toast.LENGTH_SHORT).show();
+                                                navigateTo(new MapScreen());
+                                            })
+                                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Auth failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Database error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void navigateTo(Fragment fragment) {
