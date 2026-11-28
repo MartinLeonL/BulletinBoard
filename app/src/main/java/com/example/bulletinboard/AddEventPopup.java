@@ -224,6 +224,12 @@ public class AddEventPopup extends DialogFragment {
                     Calendar endCal = Calendar.getInstance();
                     endCal.set(Calendar.HOUR_OF_DAY, selectedHour);
                     endCal.set(Calendar.MINUTE, selectedMinute);
+                    endCal.set(Calendar.SECOND, 0);
+
+                    // If picked time is earlier than current time today, roll over to tomorrow
+                    if (endCal.getTimeInMillis() <= System.currentTimeMillis()) {
+                        endCal.add(Calendar.DAY_OF_MONTH, 1);
+                    }
 
                     String amPm = selectedHour >= 12 ? "PM" : "AM";
                     int displayHour = (selectedHour % 12 == 0) ? 12 : (selectedHour % 12);

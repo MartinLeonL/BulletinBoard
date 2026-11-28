@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bulletinboard.models.Event;
 import com.example.bulletinboard.models.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -108,23 +109,30 @@ public class ListScreen extends Fragment {
                     });
         }
 
-        long currentTime = System.currentTimeMillis();
-
         eventsRegistration = FirebaseHelper.getDb().collection("events")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null || snapshots == null) return;
 
                     List<Event> fetched = new ArrayList<>();
+                    long now = System.currentTimeMillis();
+
                     for (DocumentSnapshot doc : snapshots.getDocuments()) {
                         Event event = doc.toObject(Event.class);
                         if (event != null) {
                             event.setEventId(doc.getId());
 
-                            // Event active rule: isActive == true AND (endTime == null OR endTime > currentTime)
-                            boolean notExpired = event.getEndTime() == null
-                                    || event.getEndTime().toDate().getTime() > currentTime;
+                            // Check active status
+                            Boolean activeVal = doc.getBoolean("active");
+                            if (activeVal == null) {
+                                activeVal = doc.getBoolean("isActive");
+                            }
+                            boolean isActive = activeVal != null ? activeVal : true;
 
-                            if (event.isActive() && notExpired) {
+                            // Expiration rule: active AND (no endTime OR endTime in future)
+                            Timestamp endTime = event.getEndTime();
+                            boolean notExpired = (endTime == null) || (endTime.toDate().getTime() >= (now - 300000));
+
+                            if (isActive && notExpired) {
                                 fetched.add(event);
                             }
                         }
@@ -142,7 +150,7 @@ public class ListScreen extends Fragment {
         for (Event event : allEvents) {
             boolean matchesSearch = searchQuery.isEmpty()
                     || (event.getName() != null && event.getName().toLowerCase().contains(searchQuery))
-            || (event.getPostedByName() != null && event.getPostedByName().toLowerCase().contains(searchQuery));
+                    || (event.getPostedByName() != null && event.getPostedByName().toLowerCase().contains(searchQuery));
 
             if (matchesSearch) {
                 filtered.add(event);
