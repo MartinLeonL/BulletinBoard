@@ -1,7 +1,6 @@
 package com.example.bulletinboard;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -11,12 +10,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import org.osmdroid.config.Configuration;
 import org.osmdroid.config.IConfigurationProvider;
-import java.io.File;
-import android.util.Log;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,16 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Configuration.getInstance().load(
-                getApplicationContext(),
-                getSharedPreferences("osmdroid", MODE_PRIVATE)
-        );
-
-        Configuration.getInstance().setUserAgentValue(
-                getPackageName() + "/1.0 (contact: YOUR_EMAIL)"
-        );
-
-        Configuration.getInstance().setDebugMapTileDownloader(true);
+        configureOSMDroid();
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -116,8 +106,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void configureOSMDroid()
-    {
+    private void configureOSMDroid() {
         IConfigurationProvider config = Configuration.getInstance();
 
         config.load(
@@ -125,13 +114,15 @@ public class MainActivity extends AppCompatActivity {
                 getSharedPreferences("osmdroid", MODE_PRIVATE)
         );
 
-        config.setUserAgentValue(
-                getPackageName() + "/1.0 (contact: haydeneicke@hotmail.com)"
-        );
+        config.setUserAgentValue("com.example.bulletinboard/1.0 (contact: ucfbulletinboard@ucf.edu)");
 
-        // Persistent tile storage
+        // Persistent tile storage & purge corrupt 403 cached tiles
         File basePath = new File(getFilesDir(), "osmdroid");
         File tileCache = new File(basePath, "tiles");
+
+        if (tileCache.exists()) {
+            deleteDir(tileCache);
+        }
 
         basePath.mkdirs();
         tileCache.mkdirs();
@@ -139,17 +130,28 @@ public class MainActivity extends AppCompatActivity {
         config.setOsmdroidBasePath(basePath);
         config.setOsmdroidTileCache(tileCache);
 
-        // Cache size: 100 MB maximum, trim to 80 MB
         config.setTileFileSystemCacheMaxBytes(100L * 1024 * 1024);
         config.setTileFileSystemCacheTrimBytes(80L * 1024 * 1024);
 
-        // Limit concurrent downloads
         config.setTileDownloadThreads((short) 2);
         config.setTileDownloadMaxQueueSize((short) 40);
 
-        // Debugging
         config.setDebugMode(false);
-        config.setDebugMapTileDownloader(true);
-        config.setDebugTileProviders(false);
+        config.setDebugMapTileDownloader(false);
+    }
+
+    private boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            if (children != null) {
+                for (String child : children) {
+                    boolean success = deleteDir(new File(dir, child));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return dir != null && dir.delete();
     }
 }
