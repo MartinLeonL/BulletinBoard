@@ -68,7 +68,11 @@ public class ListScreen extends Fragment {
         }
 
         adaptor = new EventAdaptor(visibleEvents);
-        adaptor.setOnItemClickListener(event -> new EventInfoPopup().show(getParentFragmentManager(), "EventInfoPopup"));
+        adaptor.setOnItemClickListener(event -> {
+            if (event != null && event.getEventId() != null) {
+                EventInfoPopup.newInstance(event.getEventId()).show(getParentFragmentManager(), "EventInfoPopup");
+            }
+        });
 
         if (rcvEventList != null) {
             rcvEventList.setLayoutManager(new LinearLayoutManager(getContext()));
