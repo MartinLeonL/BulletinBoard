@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -17,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.bulletinboard.models.Event;
@@ -164,14 +166,19 @@ public class MapScreen extends Fragment {
         return bitmap;
     }
 
-    private void addPin(double latitude, double longitude, String title, String snippet, String eventId) {
-        if (map == null) return;
+    private void addPin(double latitude, double longitude, String title, String snippet, String eventId, String category) {
+        if (map == null || getContext() == null) return;
 
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(latitude, longitude));
         marker.setTitle(title != null ? title : "Event");
         marker.setSnippet(snippet != null ? snippet : "");
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+        Drawable pinDrawable = getCategoryPinDrawable(requireContext(), category);
+        if (pinDrawable != null) {
+            marker.setIcon(pinDrawable);
+        }
 
         if (eventId != null) {
             markerEventMap.put(marker, eventId);
@@ -188,6 +195,34 @@ public class MapScreen extends Fragment {
         });
 
         map.getOverlays().add(marker);
+    }
+
+    private Drawable getCategoryPinDrawable(Context context, String category) {
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_pin);
+        if (drawable == null) return null;
+
+        Drawable mutated = drawable.mutate();
+        int color = getColorForCategory(category);
+        DrawableCompat.setTint(mutated, color);
+        return mutated;
+    }
+
+    private int getColorForCategory(String category) {
+        if (category == null) return Color.parseColor("#616161");
+        switch (category.toUpperCase()) {
+            case "CLUB":
+                return Color.parseColor("#8A2BE2");
+            case "FOOD":
+                return Color.parseColor("#D32F2F");
+            case "SPORT":
+                return Color.parseColor("#388E3C");
+            case "SOCIAL":
+                return Color.parseColor("#F57C00");
+            case "STUDENT GOV":
+                return Color.parseColor("#1976D2");
+            default:
+                return Color.parseColor("#616161");
+        }
     }
 
     private void loadEvents() {
@@ -223,7 +258,8 @@ public class MapScreen extends Fragment {
                                         event.getLongitude(),
                                         event.getName(),
                                         label,
-                                        doc.getId()
+                                        doc.getId(),
+                                        event.getCategory()
                                 );
                             }
                         }
