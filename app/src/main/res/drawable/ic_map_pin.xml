@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="44dp"
+    android:viewportWidth="32"
+    android:viewportHeight="44">
+
+    <!-- Pin Teardrop Shape -->
+    <path
+        android:fillColor="#FF0000"
+        android:pathData="M16,0 C7.16,0 0,7.16 0,16 C0,28 16,44 16,44 C16,44 32,28 32,16 C32,7.16 24.84,0 16,0 Z" />
+
+    <!-- White Center Core Circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16,16 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+</vector>
